@@ -1,4 +1,8 @@
 <?php
+
+// 1 turns it on, 0 turns it off, ensures variable types are exact
+declare(strict_types=1);
+
 /*
  * Week 7 Day 1 - Build a Stock class
  * Run from the terminal: php stock-class.php
@@ -32,6 +36,72 @@
  *   No $ after the arrow:  $item->name   (not $item->$name)
  * - Our Stock needs: id (int), symbol (string), company (string), price (float).
  */
+
+// Consist of feilds or properties, exist for every object in this class
+class Stock
+{
+    public int $id;
+    public string $symbol;
+    public string $company;
+    public float $price;
+
+    // Constructure
+    // Methodn tht runs once, automaticly whne you create a new object ('new' keyword).
+    // Says uouu can't create an object, unless you have the following-
+    public function __construct(string $symbol, string $company, float $price)
+    {
+        $this->symbol = $symbol;
+        $this->company = $company;
+        $this->price = $price;
+    }
+
+
+    // Is a method - belongs to an object. (Functions can run solo, this requires info from this class)
+    // GArauntees it returns a float (: float)
+    public function totalFor(int $shares): float
+    {
+        // Looks for price under publci section above, insteeaad of making a new price. Scope 
+        return $this->price * $shares;
+    }
+
+    public function stockInfo(): string
+    {
+        return "{$this->company} is priced at $" . number_format($this->price, 2);
+    }
+}
+
+// Proper setup with variables
+$apple = new Stock("AAPL", "Apple", 500);
+$amazon = new stock("AMZM", "Amazon", 250);
+
+
+// BELOW IS NOT AN ERROR - should work
+// $amazon = new Stock();
+// $apple->id = 1;
+// $apple->symbol = 'AAPL';
+// $apple->company = '2026';
+// $apple->price = 500.00;
+
+
+echo '10 Shares $' . number_format($apple->totalFor(10), 2);
+echo ($apple->stockInfo());
+
+
+// ------- NEW object --------------
+// $amazon = new Stock();
+// $amazon->id = 2;
+// $amazon->symbol = 'AMZN';
+// $amazon->company = 'Amazon.com Inc.';
+// $amazon->price = 250.00;
+
+$stocks = [];
+array_push($stocks, $apple, $amazon);
+
+foreach ($stocks as $stock) {
+    echo $stock->stockInfo() . "\n";
+}
+
+
 
 
 /* ---------------------------------------------------------------------
@@ -90,3 +160,19 @@
  * - Only ONE line should know the column numbers: the line that builds the
  *   object. Everything after it uses property names.
  */
+
+
+$portfolio = [];
+$file = fopen(__DIR__ . '/stock.csv', 'r');
+
+while (($row = fgetcsv($file)) !== false) {
+    // Goes through each line in the stock file, and uses data to fill the object.
+    $portfolio[] = new Stock($row[0], $row[1], (float) $row[2]);
+}
+
+fclose($file);
+
+foreach ($portfolio as $stock) {
+    echo "{$stock->symbol}: " . $stock->stockInfo()
+        . ' | 10 shares: $' . number_format($stock->totalFor(10), 2) . "\n";
+}
