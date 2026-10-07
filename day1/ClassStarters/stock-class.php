@@ -38,23 +38,33 @@ declare(strict_types=1);
  */
 
 // Consist of feilds or properties, exist for every object in this class
+// CLASS
 class Stock
 {
+    // Static - means that all objects share this variable. 
+    public static int $nextId = 1;
     public int $id;
     public string $symbol;
     public string $company;
     public float $price;
 
     // Constructure
-    // Methodn tht runs once, automaticly whne you create a new object ('new' keyword).
-    // Says uouu can't create an object, unless you have the following-
+    // Method that runs once, automaticly whne you create a new object ('new' keyword).
+    // Says you can't create an object, unless you have the following-
     public function __construct(string $symbol, string $company, float $price)
     {
+        // Double colon required for static
+        // Sets the 'id' to the current id number
+        $this->id = self::$nextId;
+
+        // Takes the varibale 'next id' and adds one to it to use for the next 'id' (In this case)
+        self::$nextId;
+
+        // I'm a new object
         $this->symbol = $symbol;
         $this->company = $company;
         $this->price = $price;
     }
-
 
     // Is a method - belongs to an object. (Functions can run solo, this requires info from this class)
     // GArauntees it returns a float (: float)
@@ -98,8 +108,13 @@ $stocks = [];
 array_push($stocks, $apple, $amazon);
 
 foreach ($stocks as $stock) {
-    echo $stock->stockInfo() . "\n";
+    // echo $stock->stockInfo() . "\n";
+    echo "#{$stock->id} {$stock->symbol}: " . $stock->stockInfo() . "\n";
 }
+
+// Anything tha tis static dones't need an object to acsess it. It can be acsessed with just the class and the variable.
+// CLASS_NAME :: $VARIABLE_NAME
+echo "Next id will be: " . Stock::$nextId . "/n";
 
 
 
@@ -172,7 +187,7 @@ while (($row = fgetcsv($file)) !== false) {
 
 fclose($file);
 
-foreach ($portfolio as $stock) {
-    echo "{$stock->symbol}: " . $stock->stockInfo()
-        . ' | 10 shares: $' . number_format($stock->totalFor(10), 2) . "\n";
-}
+// foreach ($portfolio as $stock) {
+//     echo "{$stock->symbol}: " . $stock->stockInfo()
+//         . ' | 10 shares: $' . number_format($stock->totalFor(10), 2) . "\n";
+// }
